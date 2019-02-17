@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import './App.css';
 
 const headerColor = "#47476b"
@@ -119,14 +120,62 @@ function LeftColumn() {
   )
 }
 
-class Page extends Component {
+class TodosInner extends Component {
+  render() {
+
+    return (
+        // TODO: Why is index bad? https://stackoverflow.com/questions/28329382/understanding-unique-keys-for-array-children-in-react-js
+        <ul>
+          {this.props.todos.map((todo, index) => (
+              <li key={index}>{todo.description}</li>
+            ))}
+        </ul>
+      )
+  }
+}
+
+const mapStateToPropsTodos = (state) => {
+  return {
+    todos: state
+  }
+}
+
+const Todos = connect(mapStateToPropsTodos, null)(TodosInner)
+
+const addTodo = description => ({
+  type: 'ADD_TODO',
+  description
+})
+
+class PageInner extends Component {
   render() {
     const style = {
       flex: 1
     }
-    return <div style={style}></div>
+
+    let input
+    return (
+      <div style={style}>
+        <form
+          onSubmit={e => {
+            e.preventDefault()
+            if (!input.value.trim()) {
+              return
+            }
+            this.props.dispatch(addTodo(input.value))
+            input.value = ''
+          }}
+        >
+          <input ref={node => (input = node)} />
+          <button type="submit">Add Todo</button>
+        </form>
+        <Todos />
+      </div>
+    )
   }
 }
+
+const Page = connect()(PageInner)
 
 class Body extends Component {
   render() {
@@ -144,6 +193,7 @@ class Body extends Component {
     )
   }
 }
+
 
 class App extends Component {
   render() {
