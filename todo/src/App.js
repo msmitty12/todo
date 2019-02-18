@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
 import './App.css';
 
-const headerColor = "#47476b"
-const panelColor = "#6c7c96"
-const panelColor2 = "#9ab9ea"
-const pageColor = "#e0e0eb"
+//const headerColor = "#47476b"
+const headerColor = "#ff00ff"
+// const panelColor = "#6c7c96"
+const panelColor = "#1d006d"
+// const panelColor2 = "#9ab9ea"
+const panelColor2 = "#00d0ff"
+// const pageColor = "#e0e0eb"
+const pageColor = "#3c0042"
+const formColor = "pink"
 
 
 function HeadFootWrapper(props) {
@@ -44,7 +51,8 @@ function Filter(props) {
     display: "flex",
     alignItems: "center",
     height: "30px",
-    fontSize: "20px"
+    fontSize: "20px",
+    color: "white"
   }
 
   return (
@@ -121,17 +129,39 @@ function LeftColumn() {
   )
 }
 
+const markComplete = (name) => ({
+  type: 'MARK_COMPLETE',
+  name: name
+})
+
 class TodosInner extends Component {
   render() {
+    const todosContainerStyle = {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center"
+    }
+    const itemStyle = {
+      margin: "5px",
+      backgroundColor: "#faff00",
+      borderRadius: "5px",
+      padding: "5px"
+    }
 
     return (
-        // TODO: Why is index bad? https://stackoverflow.com/questions/28329382/understanding-unique-keys-for-array-children-in-react-js
-        <ul>
-          {this.props.todos.map((todo, index) => (
-              <li key={index}>{todo.description}</li>
-            ))}
-        </ul>
-      )
+      // TODO: Why is index bad? https://stackoverflow.com/questions/28329382/understanding-unique-keys-for-array-children-in-react-js
+      <div style={todosContainerStyle}>
+        {this.props.todos.sort(function(a, b){return new Date(a.dueDate) - new Date(b.dueDate)}).map((todo, index) => (
+            <div style={itemStyle}>
+              <div>Task: {todo.name}</div>
+              <div>Description: {todo.description}</div>
+              <div>Due Date: {todo.dueDate}</div>
+              <div>{todo.completed ? "Complete!" : "Incomplete"}</div>
+              <button onClick={() => this.props.dispatch(markComplete(todo.name))} type="button">Mark Complete</button>
+            </div>
+          ))}
+      </div>
+    )
   }
 }
 
@@ -143,40 +173,76 @@ const mapStateToPropsTodos = (state) => {
 
 const Todos = connect(mapStateToPropsTodos, null)(TodosInner)
 
-const addTodo = description => ({
+const addTodo = (name, description, dueDate) => ({
   type: 'ADD_TODO',
-  description
+  name: name,
+  description: description,
+  dueDate: dueDate
 })
 
-class PageInner extends Component {
+class TodoFormInner extends Component {
   render() {
-    const style = {
-      flex: 1
+    const containerStyle = {
+      backgroundColor: formColor,
+      borderRadius: "10px",
+      width: "200px",
+      padding: "10px",
+      margin: "10px"
     }
+    const formStyle = {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center"
+    }
+    const itemStyle = {
+      marginTop: "2px",
+    }
+    let nameInput, descInput, dueDateInput;
 
-    let input
     return (
-      <div style={style}>
+      <div style={containerStyle}>
         <form
+          style={formStyle}
           onSubmit={e => {
             e.preventDefault()
-            if (!input.value.trim()) {
+            if (!nameInput.value.trim() || !descInput.value.trim()) {
               return
             }
-            this.props.dispatch(addTodo(input.value))
-            input.value = ''
+            this.props.dispatch(addTodo(nameInput.value, descInput.value, dueDateInput.value))
+            nameInput.value = ''
+            descInput.value = ''
+            dueDateInput.value = ''
           }}
         >
-          <input ref={node => (input = node)} />
-          <button type="submit">Add Todo</button>
+          <input style={itemStyle} ref={node => (nameInput = node)} />
+          <input style={itemStyle} ref={node => (descInput = node)} />
+          <input style={itemStyle} type="date" ref={node => (dueDateInput = node)} />
+          <button style={itemStyle} type="submit">Add Todo</button>
         </form>
-        <Todos />
       </div>
     )
   }
 }
 
-const Page = connect()(PageInner)
+const TodoForm = connect()(TodoFormInner)
+
+class Page extends Component {
+  render() {
+    const style = {
+      flex: 1,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center"
+    }
+
+    return (
+      <div style={style}>
+        <TodoForm />
+        <Todos />
+      </div>
+    )
+  }
+}
 
 class Body extends Component {
   render() {
@@ -195,16 +261,48 @@ class Body extends Component {
   }
 }
 
+function reducer(state = [], action) {
+  switch (action.type) { 
+    case 'ADD_TODO':
+      return [
+        ...state,
+        {
+          name: action.name,
+          description: action.description,
+          dueDate: action.dueDate,
+          completed: false
+        }
+      ]
+    case 'MARK_COMPLETE':
+      return state.map(todo =>
+        todo.name === action.name ? { ...todo, completed: true } : todo
+      )
+    default:
+      return state
+  }
+}
 
-class App extends Component {
+class AppBody extends Component {
   render() {
-
     return (
       <div className="App">
         <Header />
         <Body />
       </div>
     );
+  }
+}
+
+let store = createStore(reducer)
+store.subscribe(() => (console.log(store.getState())))
+
+class App extends Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <AppBody />
+      </Provider>
+    )
   }
 }
 
