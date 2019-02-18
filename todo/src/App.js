@@ -145,16 +145,27 @@ class TodosInner extends Component {
       margin: "5px",
       backgroundColor: "#faff00",
       borderRadius: "5px",
-      padding: "5px"
+      padding: "5px",
+      minWidth: "200px"
+    }
+    const nameStyle = {
+      fontWeight: 800,
+      borderRadius: "5px"
+    }
+    const descStyle = {
+      margin: "5px",
+      backgroundColor: "white",
+      minHeight: "50px",
+      borderRadius: "5px"
     }
 
     return (
       // TODO: Why is index bad? https://stackoverflow.com/questions/28329382/understanding-unique-keys-for-array-children-in-react-js
       <div style={todosContainerStyle}>
         {this.props.todos.sort(function(a, b){return new Date(a.dueDate) - new Date(b.dueDate)}).map((todo, index) => (
-            <div style={itemStyle}>
-              <div>Task: {todo.name}</div>
-              <div>Description: {todo.description}</div>
+            <div style={todo.completed ? {...itemStyle, backgroundColor: "green"} : itemStyle}>
+              <div style={nameStyle}>{todo.name}</div>
+              <div style={descStyle}>{todo.description}</div>
               <div>Due Date: {todo.dueDate}</div>
               <div>{todo.completed ? "Complete!" : "Incomplete"}</div>
               <button onClick={() => this.props.dispatch(markComplete(todo.name))} type="button">Mark Complete</button>
@@ -205,7 +216,7 @@ class TodoFormInner extends Component {
           style={formStyle}
           onSubmit={e => {
             e.preventDefault()
-            if (!nameInput.value.trim() || !descInput.value.trim()) {
+            if (!nameInput.value.trim()) {
               return
             }
             this.props.dispatch(addTodo(nameInput.value, descInput.value, dueDateInput.value))
