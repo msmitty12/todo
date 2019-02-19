@@ -3,5 +3,5 @@ node_js:
   - "iojs"
   - "7"
 before_install: echo "Preparing build"
-script: pushd todo && npm run build
-after_success: pushd todo && npm run deploy
+script: pushd todo && npm install && npm run build
+after_success: pushd todo && npm install && npm run deploy
