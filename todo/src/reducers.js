@@ -20,6 +20,18 @@ function removeDoc(docName) {
   });
 }
 
+function updateDoc(docName, key, val) {
+  var doc_query = db.collection('todos').where('name','==',docName);
+
+  let updateDict = {}
+  updateDict[key] = val
+  doc_query.get().then(function(querySnapshot) {
+    querySnapshot.forEach(function(doc) {
+      doc.ref.update(updateDict);
+    });
+  });
+}
+
 function todos(todos = [], action) {
   switch (action.type) { 
     case 'ADD_TODO':
@@ -36,6 +48,7 @@ function todos(todos = [], action) {
         newTodo
       ]
     case 'MARK_COMPLETE':
+      updateDoc(action.name, "completed", true)
       return todos.map(todo =>
         todo.name === action.name ? { ...todo, completed: true } : todo
       )
