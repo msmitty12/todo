@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://msmitty12.github.io/todo/",
   "dependencies": {
+    "firebase": "^5.8.3",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-redux": "^6.0.0",
