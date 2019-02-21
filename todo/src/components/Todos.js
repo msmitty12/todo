@@ -46,7 +46,7 @@ class Task extends Component {
     const taskColor = getColor(remainingDays)
 
     return (
-      <div style={{...itemStyle, backgroundColor: taskColor}}>
+      <div style={{...itemStyle, backgroundColor: this.props.completed ? "lightgreen" : taskColor}}>
         <div style={nameStyle}>{this.props.name}</div>
         <div style={descStyle}>{this.props.description}</div>
         <div>Due Date: {this.props.dueDate}</div>

@@ -2,5 +2,5 @@ language: node_js
 node_js:
   - "7"
 before_install: echo "Preparing build"
-script: pushd todo && npm install && npm run build
-after_success: pushd todo && npm install && npm run deploy
+script: pushd todo && npm install && npm run build && npm run deploy
+after_success: 
