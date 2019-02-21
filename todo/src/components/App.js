@@ -19,7 +19,9 @@ const pageColor = "#3c0042"
 function HeadFootWrapper(props) {
   const style = {
     backgroundColor: headerColor,
-    height: "50px"
+    height: "50px",
+    width: "100%",
+    position: "fixed"
   }
 
   return (
@@ -51,7 +53,8 @@ function Folders() {
   const style = {
     backgroundColor: panelColor2,
     flexGrow: 1,
-    width: "100%"
+    width: "100%",
+    height: "100%"
   }
   return <div style={style} />
 }
@@ -61,8 +64,7 @@ function LeftColumn() {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    minWidth: "150px",
-    height: "100%",
+    width: "250px",
     backgroundColor: panelColor
   }
 
@@ -97,7 +99,8 @@ class Body extends Component {
     const style = {
       flex: 1,
       display: "flex",
-      backgroundColor: pageColor
+      backgroundColor: pageColor,
+      paddingTop: "50px"
     }
 
     return (
@@ -113,9 +116,7 @@ class App extends Component {
   render() {
     const style = {
       textAlign: "center",
-      height: "100vh",
-      flexDirection: "column",
-      display: "flex"
+      height: "100%"
     }
     return (
       <div style={style}>
