@@ -3,13 +3,14 @@ import { connect } from 'react-redux';
 import { markComplete, deleteTodo } from '../actions.js';
 import {v4 as uuid} from 'uuid';
 
+// Idk what this is actually doing, but it seems to be working
 function getColor(remainingDays){
     let lightness = "80"
     const truncedDays = remainingDays > 4 ? 4 : remainingDays
     const percent = (truncedDays / 4.0)
     let hue=(percent*50).toString(10);
     if (remainingDays < 0) {
-      lightness = "40"
+      lightness = "65"
       hue = "0"
     } else if (remainingDays > 4) {
       hue = "50"

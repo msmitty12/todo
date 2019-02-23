@@ -3,17 +3,17 @@ import {default as Todos} from './Todos'
 import {default as TodoForm} from './TodoForm'
 import {LeftFilters} from './LeftFilters'
 
-/*
 const headerColor = "#47476b"
 const panelColor = "#6c7c96"
 const panelColor2 = "#9ab9ea"
 const pageColor = "#e0e0eb"
-*/
 
+/*
 const headerColor = "#ff00ff"
 const panelColor = "#1d006d"
 const panelColor2 = "#00d0ff"
 const pageColor = "#3c0042"
+*/
 
 
 function HeadFootWrapper(props) {
