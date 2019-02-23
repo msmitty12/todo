@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {default as Todos} from './Todos'
+import {default as Todos2} from './Todos2'
 import {default as TodoForm} from './TodoForm'
+import {default as TodoForm2} from './TodoForm2'
 import {LeftFilters} from './LeftFilters'
 
 const headerColor = "#47476b"
@@ -21,7 +23,8 @@ function HeadFootWrapper(props) {
     backgroundColor: headerColor,
     height: "50px",
     width: "100%",
-    position: "fixed"
+    position: "fixed",
+    zIndex: 999
   }
 
   return (
@@ -87,8 +90,8 @@ class Page extends Component {
 
     return (
       <div style={style}>
-        <TodoForm />
-        <Todos />
+        <TodoForm2 />
+        <Todos2 />
       </div>
     )
   }
