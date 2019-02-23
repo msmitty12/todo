@@ -1,18 +1,19 @@
-
+import {v4 as uuid} from 'uuid';
 
 export const addTodo = (name, description, dueDate) => ({
+  id: uuid(),
   type: 'ADD_TODO',
   name: name,
   description: description,
   dueDate: dueDate
 })
 
-export const markComplete = (name) => ({
+export const markComplete = (id) => ({
   type: 'MARK_COMPLETE',
-  name: name
+  id: id
 })
 
-export const deleteTodo = (name) => ({
+export const deleteTodo = (id) => ({
   type: 'DELETE_TODO',
-  name: name
+  id: id
 })

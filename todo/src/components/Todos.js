@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { markComplete, deleteTodo } from '../actions.js'
+import { markComplete, deleteTodo } from '../actions.js';
+import {v4 as uuid} from 'uuid';
 
 function getColor(remainingDays){
     let lightness = "80"
@@ -52,8 +53,8 @@ class Task extends Component {
         <div>Due Date: {this.props.dueDate}</div>
         <div>{this.props.completed ? "Complete!" : "Incomplete"}</div>
         <div>
-          <button onClick={() => this.props.dispatch(markComplete(this.props.name))} type="button">Mark Complete</button>
-          <button onClick={() => this.props.dispatch(deleteTodo(this.props.name))} type="button">Delete</button>
+          <button onClick={() => this.props.dispatch(markComplete(this.props.id))} type="button">Mark Complete</button>
+          <button onClick={() => this.props.dispatch(deleteTodo(this.props.id))} type="button">Delete</button>
         </div>
       </div> 
     )

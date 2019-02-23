@@ -11,8 +11,10 @@ function addDoc(doc) {
     });
 }
 
-function removeDoc(docName) {
-  var doc_query = db.collection('todos').where('name','==',docName);
+function removeDoc(docId) {
+  var doc_query = db.collection('todos').where('id','==',docId);
+  console.log("query")
+  console.log(doc_query.get());
   doc_query.get().then(function(querySnapshot) {
     querySnapshot.forEach(function(doc) {
       doc.ref.delete();
@@ -20,8 +22,8 @@ function removeDoc(docName) {
   });
 }
 
-function updateDoc(docName, key, val) {
-  var doc_query = db.collection('todos').where('name','==',docName);
+function updateDoc(docId, key, val) {
+  var doc_query = db.collection('todos').where('id','==',docId);
 
   let updateDict = {}
   updateDict[key] = val
@@ -36,6 +38,7 @@ function todos(todos = [], action) {
   switch (action.type) { 
     case 'ADD_TODO':
       const newTodo = {
+        id: action.id,
         name: action.name,
         description: action.description,
         dueDate: action.dueDate,
@@ -48,13 +51,13 @@ function todos(todos = [], action) {
         newTodo
       ]
     case 'MARK_COMPLETE':
-      updateDoc(action.name, "completed", true)
+      updateDoc(action.id, "completed", true)
       return todos.map(todo =>
-        todo.name === action.name ? { ...todo, completed: true } : todo
+        todo.id === action.id ? { ...todo, completed: true } : todo
       )
     case 'DELETE_TODO':
-      removeDoc(action.name);
-      return todos.filter(todo => todo.name !== action.name)
+      removeDoc(action.id);
+      return todos.filter(todo => todo.id !== action.id)
     default:
       return todos
   }
