@@ -31,7 +31,7 @@ class Task extends Component {
       backgroundColor: "lightyellow",
       borderRadius: "5px",
       padding: "5px",
-      width: "90%"
+      width: "400px"
     }
     const nameStyle = {
       fontWeight: 800,

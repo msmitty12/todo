@@ -13,7 +13,7 @@ class TodoForm2 extends Component {
       borderStyle: "solid",
       borderColor: borderColor,
       borderRadius: "10px",
-      width: "90%",
+      //width: "90%",
       class: "form-group",
       padding: "10px",
       margin: "10px"
