@@ -65,8 +65,7 @@ function Folders() {
 
 function LeftColumn() {
   const style = {
-    backgroundColor: panelColor,
-    height: "100%"
+    backgroundColor: panelColor
   }
 
   return (
@@ -79,14 +78,9 @@ function LeftColumn() {
 
 class Page extends Component {
   render() {
-    const style = {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center"
-    }
 
     return (
-      <div style={style}>
+      <div>
         <TodoForm2 />
         <Todos2 />
       </div>
@@ -97,18 +91,16 @@ class Page extends Component {
 class Body extends Component {
   render() {
     const style = {
-      flex: 1,
-      backgroundColor: pageColor,
       paddingTop: "50px"
     }
 
     return (
-      <div className="container-fluid" style={style}>
+      <div className="container" style={style}>
         <div className="row">
-          <div className=".col-8">
+          <div className="d-none d-md-block col-md-4" style={{backgroundColor: panelColor2}}>
             <LeftColumn />
           </div>
-          <div className=".col-8">
+          <div className="col-12 col-md-8">
             <Page />
           </div>
         </div>
@@ -121,7 +113,8 @@ class App extends Component {
   render() {
     const style = {
       textAlign: "center",
-      height: "100%"
+      height: "100%",
+      backgroundColor: pageColor
     }
     return (
       <div style={style}>

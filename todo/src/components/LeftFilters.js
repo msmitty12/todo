@@ -41,9 +41,6 @@ function StringFilter(props) {
 
 export function LeftFilters() {
   const style = {
-    display: "flex",
-    flexDirection: "column",
-    flexShrink: 0,
     padding: "15px"
   }
 
