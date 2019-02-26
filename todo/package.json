@@ -5,6 +5,7 @@
   "homepage": "https://msmitty12.github.io/todo/",
   "dependencies": {
     "bootstrap": "^4.3.1",
+    "bootstrap-toggle": "^2.2.2",
     "firebase": "^5.8.3",
     "jquery": "^3.3.1",
     "popper.js": "^1.14.7",

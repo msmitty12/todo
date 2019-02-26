@@ -63,7 +63,18 @@ function todos(todos = [], action) {
   }
 }
 
+function page(page = {}, action) {
+  switch (action.type) {
+    case 'TOGGLE_LEFT_COLUMN':
+      const visible = page && page.leftColumn && page.leftColumn.visible
+      return {...page, leftColumn: {...page["leftColumn"], visible: !visible}}
+    default:
+      return page
+  }
+}
+
 export const reducer = combineReducers({
-  todos
+  todos,
+  page
 })
 

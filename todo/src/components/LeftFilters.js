@@ -47,7 +47,7 @@ export function LeftFilters() {
   return (
     <div style={style}>
       <Filter filterId="today" filterName="Today" />
-      <Filter filterId="nextTwoWeeks" filterName="Next Two Weeks" />
+      <Filter filterId="week" filterName="Week" />
       <StringFilter />
     </div>
   )

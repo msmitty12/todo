@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { markComplete, deleteTodo } from '../actions.js';
-import {v4 as uuid} from 'uuid';
 
 // Idk what this is actually doing, but it seems to be working
 function getColor(remainingDays){
@@ -32,16 +31,6 @@ class Task extends Component {
       borderRadius: "5px",
       padding: "5px",
       width: "100%"
-    }
-    const nameStyle = {
-      fontWeight: 800,
-      borderRadius: "5px"
-    }
-    const descStyle = {
-      margin: "5px",
-      backgroundColor: "white",
-      minHeight: "50px",
-      borderRadius: "5px"
     }
 
     let remainingDays = datediff(new Date(), new Date(this.props.dueDate))

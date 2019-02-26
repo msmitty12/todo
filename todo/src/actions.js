@@ -17,3 +17,7 @@ export const deleteTodo = (id) => ({
   type: 'DELETE_TODO',
   id: id
 })
+
+export const toggleLeftColumn = () => ({
+    type: 'TOGGLE_LEFT_COLUMN'
+})
