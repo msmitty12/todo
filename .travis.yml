@@ -2,5 +2,11 @@ language: node_js
 node_js:
   - "7"
 before_install: echo "Preparing build"
-script: pushd todo && npm install && npm run build && npm run deploy
-after_success: 
+script: pushd todo && npm install && npm run build
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  keep-history: true
+  on:
+    branch: master
