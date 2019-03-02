@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { markComplete, deleteTodo } from '../actions.js';
-import {v4 as uuid} from 'uuid';
 
 // Idk what this is actually doing, but it seems to be working
 function getColor(remainingDays){
