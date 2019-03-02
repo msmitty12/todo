@@ -3,8 +3,10 @@ node_js:
   - "7"
 before_install: echo "Preparing build"
 script: pushd todo && npm install && npm run build
+before_deploy:
+  - cd todo
 deploy:
-  provider: pages
+  provider: npm
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
   keep-history: true
