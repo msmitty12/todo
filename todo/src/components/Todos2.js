@@ -44,8 +44,8 @@ class Task extends Component {
           <p className="card-text">{this.props.description}</p>
           <div>Due Date: {this.props.dueDate}</div>
           <h5>{taskStatus}</h5>
-          <a href="#" className="btn btn-info" onClick={() => this.props.dispatch(markComplete(this.props.id))}>Mark Complete</a>
-          <a href="#" className="btn btn-danger" onClick={() => this.props.dispatch(deleteTodo(this.props.id))}>Delete</a>
+          <button href="#" className="btn btn-info" onClick={() => this.props.dispatch(markComplete(this.props.id))}>Mark Complete</button>
+          <button href="#" className="btn btn-danger" onClick={() => this.props.dispatch(deleteTodo(this.props.id))}>Delete</button>
         </div>
       </div>
     )
