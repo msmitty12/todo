@@ -5,7 +5,7 @@ before_install: echo "Preparing build"
 script: pushd todo && npm install && npm run build
 deploy:
   provider: pages
-  local-dir: build
+  local-dir: todo/build
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
   keep-history: true
