@@ -37,7 +37,7 @@ class TodoForm2 extends Component {
             if (!nameInput.value.trim()) {
               return
             }
-            this.props.dispatch(addTodo(nameInput.value, descInput.value, dueDateInput.value))
+            this.props.dispatch(addTodo(nameInput.value, descInput.value, dueDateInput.value, this.props.page.active_folder))
             nameInput.value = ''
             descInput.value = ''
             dueDateInput.value = ''
@@ -47,4 +47,10 @@ class TodoForm2 extends Component {
   }
 }
 
-export default connect()(TodoForm2);
+const mapStateToPropsTodos = (state) => {
+  return {
+    page: state.page
+  }
+}
+
+export default connect(mapStateToPropsTodos, null)(TodoForm2);

@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import {default as Todos2} from './Todos2'
 import {default as TodoForm2} from './TodoForm2'
 import {LeftFilters} from './LeftFilters'
+import {default as Folders} from './Folders'
 import { connect } from 'react-redux';
+import styled, { keyframes } from 'styled-components';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -13,15 +15,6 @@ const panelColor2 = "#9ab9ea"
 const panelColor = "#1d006d"
 const panelColor2 = "#00d0ff"
 */
-
-
-function Folders() {
-  const style = {
-    backgroundColor: panelColor2,
-    width: "100%"
-  }
-  return <div style={style} />
-}
 
 function LeftColumn(props) {
   const style = {
@@ -50,7 +43,25 @@ class Page extends Component {
 }
 
 class Body extends Component {
+  getDerivedStateFromProps(nextProps, prevState) {
+    const nextVisible = nextProps.page && nextProps.page.leftColumn && nextProps.page.leftColumn.visible
+    const visible =  this.props.page && this.props.page.leftColumn && this.props.page.leftColumn.visible
+    if(visible !== nextVisible ) {
+      return {stateFoo: 'valueBar'};
+    }
+  }
+
   render() {
+    /*
+    let spin = keyframes`
+      0% { transform: scale(.2); }
+      100% { transform: scale(1); }
+    `
+    const StyledTodosContainer = styled.div`
+      animation: ${spin} 1s linear;
+    `
+    */
+
     const style = {
       paddingTop: "50px"
     }

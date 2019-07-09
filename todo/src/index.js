@@ -35,6 +35,7 @@ function initApp(preloadedState = {}) {
 }
 
 let todos = []
+let folders = []
 
 db.collection("todos").get().then((querySnapshot) => {
     querySnapshot.forEach((doc) => {
@@ -44,7 +45,16 @@ db.collection("todos").get().then((querySnapshot) => {
       todos.push(doc.data());
     });
 
-    initApp({todos: todos})
+   db.collection("folders").get().then((querySnapshot) => {
+       querySnapshot.forEach((doc) => {
+           console.log(doc.data());
+       });
+       querySnapshot.forEach((doc) => {
+         folders.push(doc.data());
+       });
+
+      initApp({todos: todos, folders: folders, page: {"active_folder": "default"}})
+   });
 });
 
 // If you want your app to work offline and load faster, you can change

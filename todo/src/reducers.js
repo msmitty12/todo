@@ -11,10 +11,20 @@ function addDoc(doc) {
     });
 }
 
+function updateFolderDoc(folder) {
+  db.collection("folders").where('name','==',folder.name)
+    .get()
+    .then(function(querySnapshot) {
+      querySnapshot.forEach(function(doc) {
+        console.log(doc.id, " => ", doc.data());
+        db.collection("folders").doc(doc.id).update(folder);
+      });
+    })
+}
+
 function removeDoc(docId) {
   var doc_query = db.collection('todos').where('id','==',docId);
-  console.log("query")
-  console.log(doc_query.get());
+
   doc_query.get().then(function(querySnapshot) {
     querySnapshot.forEach(function(doc) {
       doc.ref.delete();
@@ -56,10 +66,34 @@ function todos(todos = [], action) {
         todo.id === action.id ? { ...todo, completed: true } : todo
       )
     case 'DELETE_TODO':
-      removeDoc(action.id);
+      if (action.id && todos.filter(todo => todo.id === action.id)) {
+        removeDoc(action.id);
+      }
       return todos.filter(todo => todo.id !== action.id)
     default:
       return todos
+  }
+}
+
+function folders(folders = [], action) {
+  switch (action.type) {
+    case 'ADD_TODO':
+      // TODO: Changing object directly :( )
+      let folder = folders.find(it => {return it.name == action.folder | "default"})
+      folder.todos.push(action.id)
+      updateFolderDoc(folder)
+
+      return folders
+    case 'DELETE_TODO':
+      console.log("DELETE") 
+      console.log(action.id)
+      let delFolder = folders.find(it => {return it.name == action.folder | "default"})
+      delFolder.todos = delFolder.todos.filter(id => {return id !== action.id})
+      updateFolderDoc(delFolder)
+
+      return folders
+    default:
+      return folders
   }
 }
 
@@ -68,6 +102,8 @@ function page(page = {}, action) {
     case 'TOGGLE_LEFT_COLUMN':
       const visible = page && page.leftColumn && page.leftColumn.visible
       return {...page, leftColumn: {...page["leftColumn"], visible: !visible}}
+    case 'SET_ACTIVE_FOLDER':
+      return {...page, active_folder: action.name}
     default:
       return page
   }
@@ -75,6 +111,7 @@ function page(page = {}, action) {
 
 export const reducer = combineReducers({
   todos,
+  folders,
   page
 })
 

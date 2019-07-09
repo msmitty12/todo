@@ -1,21 +1,27 @@
 import {v4 as uuid} from 'uuid';
 
-export const addTodo = (name, description, dueDate) => ({
+export const addTodo = (name, description, dueDate, folder) => ({
   id: uuid(),
   type: 'ADD_TODO',
   name: name,
   description: description,
-  dueDate: dueDate
+  dueDate: dueDate,
+  folder: folder
 })
 
+export const setActiveFolder = (name) => ({
+  type: 'SET_ACTIVE_FOLDER',
+  name: name
+})
 export const markComplete = (id) => ({
   type: 'MARK_COMPLETE',
   id: id
 })
 
-export const deleteTodo = (id) => ({
+export const deleteTodo = (id, folder) => ({
   type: 'DELETE_TODO',
-  id: id
+  id: id,
+  folder: folder
 })
 
 export const toggleLeftColumn = () => ({

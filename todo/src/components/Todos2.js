@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { markComplete, deleteTodo } from '../actions.js';
+import styled, { keyframes } from 'styled-components';
+
 
 // Idk what this is actually doing, but it seems to be working
 function getColor(remainingDays){
@@ -45,7 +47,7 @@ class Task extends Component {
           <div>Due Date: {this.props.dueDate}</div>
           <h5>{taskStatus}</h5>
           <button href="#" className="btn btn-info" onClick={() => this.props.dispatch(markComplete(this.props.id))}>Mark Complete</button>
-          <button href="#" className="btn btn-danger" onClick={() => this.props.dispatch(deleteTodo(this.props.id))}>Delete</button>
+          <button href="#" className="btn btn-danger" onClick={() => this.props.dispatch(deleteTodo(this.props.id, this.props.active_folder))}>Delete</button>
         </div>
       </div>
     )
@@ -54,26 +56,38 @@ class Task extends Component {
 
 class Todos extends Component {
   render() {
-    const todosContainerStyle = {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      width: "100%"
-    }
+    let spin = keyframes`
+      0% { transform: scale(.2); }
+      100% { transform: scale(1); }
+    `
+    const StyledTodosContainer = styled.div`
+      display: "flex";
+      flex-direction: "column";
+      align-items: "center";
+      width: "100%";
+      //animation: ${spin} 1s linear;
+    `
+
+    let folder = this.props.folders.find((it) => {return it.name == this.props.page.active_folder})
+    let active_todos = folder.todos.map(x => this.props.todos.find((it) => {return it.id == x}))
 
     return (
-      <div style={todosContainerStyle}>
-        {this.props.todos.sort(function(a, b){return new Date(a.dueDate) - new Date(b.dueDate)}).map((todo, index) => (
-            <Task {...todo} dispatch={this.props.dispatch} />
+      <StyledTodosContainer>
+        {active_todos.sort(function(a, b){return new Date(a.dueDate) - new Date(b.dueDate)}).map((todo, index) => (
+            <Task {...todo} 
+                  dispatch={this.props.dispatch}
+                  active_folder={this.props.page.active_folder} />
           ))}
-      </div>
+      </StyledTodosContainer>
     )
   }
 }
 
 const mapStateToPropsTodos = (state) => {
   return {
-    todos: state.todos
+    todos: state.todos,
+    folders: state.folders,
+    page: state.page
   }
 }
 

@@ -70,9 +70,12 @@ class Todos extends Component {
       width: "100%"
     }
 
+    let folder = this.props.folders.find((it) => {return it.name == this.props.page.active_folder})
+    let active_todos = folder.todos.map(x => this.props.todos.find((it) => {return it.id == x}))
+
     return (
       <div style={todosContainerStyle}>
-        {this.props.todos.sort(function(a, b){return new Date(a.dueDate) - new Date(b.dueDate)}).map((todo, index) => (
+        {active_todos.sort(function(a, b){return new Date(a.dueDate) - new Date(b.dueDate)}).map((todo, index) => (
             <Task {...todo} dispatch={this.props.dispatch} />
           ))}
       </div>
@@ -82,7 +85,9 @@ class Todos extends Component {
 
 const mapStateToPropsTodos = (state) => {
   return {
-    todos: state.todos
+    todos: state.todos,
+    folders: state.folders,
+    page: state.page
   }
 }
 
