@@ -14,17 +14,19 @@ const panelColor2 = "#00d0ff"
 
 
 function AddFolder(props) {
-  const style = {
+  const border_style = {
     backgroundColor: "lightgreen",
-    color: "black",
-    margin: "5px",
-    borderRadius: "5px",
-    padding: "5px",
     width: "100%"
   }
 
+  const common_style = {
+    margin: "5px",
+    borderRadius: "5px",
+    padding: "5px"
+  }
+
   let ret = (
-    <button style={style} href="#" className="btn btn-primary" onClick={() => props.dispatch(acceptAddFolderInput())}>
+    <button style={common_style} href="#" className="btn btn-primary" onClick={() => props.dispatch(acceptAddFolderInput())}>
       <span className="glyphicon glyphicon-plus">&#x2b;</span> New Folder
     </button>
   )
@@ -33,9 +35,12 @@ function AddFolder(props) {
     let folder_name
 
     ret = (
-      <div style={style}>
+      <div style={{...common_style, ...border_style}}>
         <form onSubmit={() => props.dispatch(addFolder(folder_name.value))}>
           <input type="text" className="form-control" placeholder="Folder Name" ref={node => (folder_name = node)} />
+          <button type="button" href="#" className="btn btn-secondary">
+            Cancel
+          </button>
           <button type="submit" href="#" className="btn btn-success">
             <span className="glyphicon glyphicon-plus">&#x2b;</span>
           </button>

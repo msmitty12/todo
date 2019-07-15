@@ -32,6 +32,9 @@ class TodoForm2 extends Component {
           <label>Due Date</label>
           <input type="date" className="form-control" ref={node => (dueDateInput = node)} />
         </div>
+        <button type="button" href="#" className="btn btn-secondary">
+          Cancel
+        </button>
         <button type="submit" className="btn btn-primary" onClick={e => {
             e.preventDefault()
             if (!nameInput.value.trim()) {
