@@ -1,54 +1,74 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { addTodo } from '../actions.js'
+import { addTodo, acceptAddTaskInput } from '../actions.js';
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.css';
 
-const formColor = "pink"
+const borderColor = "#6c7c96"
+// const formColor = "pink"
 
-class TodoForm extends Component {
+class TodoForm2 extends Component {
   render() {
     const containerStyle = {
-      backgroundColor: formColor,
+      borderStyle: "solid",
+      borderColor: borderColor,
       borderRadius: "10px",
-      width: "250px",
+      //width: "90%",
+      class: "form-group",
       padding: "10px",
       margin: "10px"
     }
-    const formStyle = {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center"
-    }
-    const itemStyle = {
-      marginTop: "2px",
-    }
     let nameInput, descInput, dueDateInput;
 
-    return (
-      <div style={containerStyle}>
-        <form
-          style={formStyle}
-          onSubmit={e => {
+    let formDisplay = (
+      <form style={containerStyle}>
+        <div className="form-group" width="90%">
+          <input type="text" className="form-control" ref={node => (nameInput = node)} placeholder="Task Name" />
+        </div>
+        <div className="form-group">
+          <textarea className="form-control" ref={node => (descInput = node)} placeholder="Description" rows="2"></textarea>
+        </div>
+        <div className="form-group">
+          <label>Due Date</label>
+          <input type="date" className="form-control" ref={node => (dueDateInput = node)} />
+        </div>
+        <button type="submit" className="btn btn-primary" onClick={e => {
             e.preventDefault()
             if (!nameInput.value.trim()) {
               return
             }
-            this.props.dispatch(addTodo(nameInput.value, descInput.value, dueDateInput.value))
+            this.props.dispatch(addTodo(nameInput.value, descInput.value, dueDateInput.value, this.props.page.active_folder))
             nameInput.value = ''
             descInput.value = ''
             dueDateInput.value = ''
-          }}
-        >
-          <div>Name</div>
-          <input style={itemStyle} ref={node => (nameInput = node)} />
-          <div>Description</div>
-          <input style={itemStyle} ref={node => (descInput = node)} />
-          <div>Due Date</div>
-          <input style={itemStyle} type="date" ref={node => (dueDateInput = node)} />
-          <button style={itemStyle} type="submit">Add Task</button>
-        </form>
-      </div>
+          }}>Add Task</button>
+      </form>
     )
+
+    if (!this.props.page.add_task_accept_input) {
+      let buttonStyle = {
+        borderStyle: "solid",
+        borderColor: borderColor,
+        borderRadius: "10px",
+        padding: "10px",
+        margin: "10px"
+      }
+
+      formDisplay = (
+        <button style={buttonStyle} href="#" className="btn btn-primary" onClick={() => this.props.dispatch(acceptAddTaskInput())}>
+          <span className="glyphicon glyphicon-plus">&#x2b;</span> New Task
+        </button>
+      )
+    }
+
+    return formDisplay
   }
 }
 
-export default connect()(TodoForm);
+const mapStateToPropsTodos = (state) => {
+  return {
+    page: state.page
+  }
+}
+
+export default connect(mapStateToPropsTodos, null)(TodoForm2);

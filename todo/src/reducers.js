@@ -11,6 +11,16 @@ function addDoc(doc) {
     });
 }
 
+function addFolderDoc(doc) {
+  db.collection("folders").add(doc)
+    .then(function(docRef) {
+        console.log("Document written with ID: ", docRef.id);
+    })
+    .catch(function(error) {
+        console.error("Error adding document: ", error);
+    });
+}
+
 function updateFolderDoc(folder) {
   db.collection("folders").where('name','==',folder.name)
     .get()
@@ -92,6 +102,10 @@ function folders(folders = [], action) {
       updateFolderDoc(delFolder)
 
       return folders
+    case 'ADD_FOLDER':
+      let new_folder = {name: action.name, todos: []}
+      addFolderDoc(new_folder)
+      return folders.concat([new_folder])
     default:
       return folders
   }
@@ -104,6 +118,14 @@ function page(page = {}, action) {
       return {...page, leftColumn: {...page["leftColumn"], visible: !visible}}
     case 'SET_ACTIVE_FOLDER':
       return {...page, active_folder: action.name}
+    case 'SET_ACCEPT_ADD_FOLDER':
+      return {...page, add_folder_accept_input: true}
+    case 'SET_ACCPET_ADD_TASK':
+      return {...page, add_task_accept_input: true}
+    case 'ADD_FOLDER':
+      return {...page, add_folder_accept_input: false}
+    case 'ADD_TODO':
+      return {...page, add_task_accept_input: false}
     default:
       return page
   }

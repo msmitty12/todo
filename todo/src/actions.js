@@ -13,6 +13,20 @@ export const setActiveFolder = (name) => ({
   type: 'SET_ACTIVE_FOLDER',
   name: name
 })
+
+export const acceptAddFolderInput = () => ({
+  type: 'SET_ACCEPT_ADD_FOLDER'
+})
+
+export const acceptAddTaskInput = () => ({
+  type: 'SET_ACCPET_ADD_TASK'
+})
+
+export const addFolder = (name) => ({
+  type: 'ADD_FOLDER',
+  name: name
+})
+
 export const markComplete = (id) => ({
   type: 'MARK_COMPLETE',
   id: id

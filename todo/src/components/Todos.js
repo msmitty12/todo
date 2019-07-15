@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { markComplete, deleteTodo } from '../actions.js';
+import styled, { keyframes } from 'styled-components';
+
 
 // Idk what this is actually doing, but it seems to be working
 function getColor(remainingDays){
@@ -30,55 +32,53 @@ class Task extends Component {
       backgroundColor: "lightyellow",
       borderRadius: "5px",
       padding: "5px",
-      width: "90%"
-    }
-    const nameStyle = {
-      fontWeight: 800,
-      borderRadius: "5px"
-    }
-    const descStyle = {
-      margin: "5px",
-      backgroundColor: "white",
-      minHeight: "50px",
-      borderRadius: "5px"
+      width: "100%"
     }
 
     let remainingDays = datediff(new Date(), new Date(this.props.dueDate))
     const taskColor = getColor(remainingDays)
+    const taskStatus = this.props.completed ? "Complete!" : remainingDays < 0 ? "Overdue" : "Incomplete"
 
     return (
-      <div style={{...itemStyle, backgroundColor: this.props.completed ? "lightgreen" : taskColor}}>
-        <div style={nameStyle}>{this.props.name}</div>
-        <div style={descStyle}>{this.props.description}</div>
-        <div>Due Date: {this.props.dueDate}</div>
-        <div>{this.props.completed ? "Complete!" : "Incomplete"}</div>
-        <div>
-          <button onClick={() => this.props.dispatch(markComplete(this.props.id))} type="button">Mark Complete</button>
-          <button onClick={() => this.props.dispatch(deleteTodo(this.props.id))} type="button">Delete</button>
+      <div className="card" style={{...itemStyle, backgroundColor: this.props.completed ? "lightgreen" : taskColor}}>
+        <div className="card-body">
+          <h5 className="card-title">{this.props.name}</h5>
+          <p className="card-text">{this.props.description}</p>
+          <div>Due Date: {this.props.dueDate}</div>
+          <h5>{taskStatus}</h5>
+          <button href="#" className="btn btn-info" onClick={() => this.props.dispatch(markComplete(this.props.id))}>Mark Complete</button>
+          <button href="#" className="btn btn-danger" onClick={() => this.props.dispatch(deleteTodo(this.props.id, this.props.active_folder))}>Delete</button>
         </div>
-      </div> 
+      </div>
     )
   }
 }
 
 class Todos extends Component {
   render() {
-    const todosContainerStyle = {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      width: "100%"
-    }
+    let spin = keyframes`
+      0% { transform: scale(.2); }
+      100% { transform: scale(1); }
+    `
+    const StyledTodosContainer = styled.div`
+      display: "flex";
+      flex-direction: "column";
+      align-items: "center";
+      width: "100%";
+      //animation: ${spin} 1s linear;
+    `
 
     let folder = this.props.folders.find((it) => {return it.name == this.props.page.active_folder})
     let active_todos = folder.todos.map(x => this.props.todos.find((it) => {return it.id == x}))
 
     return (
-      <div style={todosContainerStyle}>
+      <StyledTodosContainer>
         {active_todos.sort(function(a, b){return new Date(a.dueDate) - new Date(b.dueDate)}).map((todo, index) => (
-            <Task {...todo} dispatch={this.props.dispatch} />
+            <Task {...todo} 
+                  dispatch={this.props.dispatch}
+                  active_folder={this.props.page.active_folder} />
           ))}
-      </div>
+      </StyledTodosContainer>
     )
   }
 }

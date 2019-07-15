@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {default as Todos2} from './Todos2'
-import {default as TodoForm2} from './TodoForm2'
+import {default as Todos} from './Todos'
+import {default as TodoForm} from './TodoForm'
 import {LeftFilters} from './LeftFilters'
 import {default as Folders} from './Folders'
 import { connect } from 'react-redux';
@@ -35,8 +35,8 @@ class Page extends Component {
 
     return (
       <div className={this.props.calcClass}>
-        <TodoForm2 />
-        <Todos2 />
+        <TodoForm />
+        <Todos />
       </div>
     )
   }
