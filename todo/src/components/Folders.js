@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setActiveFolder } from '../actions.js'
+import { setActiveFolder, deleteFolder } from '../actions.js'
 import { addFolder, toggleAddFolder } from '../actions.js';
 
 
@@ -32,7 +32,7 @@ function AddFolder(props) {
             e.preventDefault();
             props.dispatch(addFolder(folder_name.value)); 
           }}>
-          <input style={{marginBottom: "5px"}} type="text" className="form-control" placeholder="Folder Name" ref={node => (folder_name = node)} />
+          <input autoFocus style={{marginBottom: "5px"}} type="text" className="form-control" placeholder="Folder Name" ref={node => (folder_name = node)} />
           <button style={{marginRight: "5px"}} type="button" href="#" className="btn btn-secondary" onClick={() => {
             props.dispatch(toggleAddFolder())
           }}>
@@ -77,7 +77,7 @@ class Folder extends Component {
           <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
           <div className="dropdown-menu" aria-labelledby="navbarDropdown">
             <a className="dropdown-item" href="#">Rename</a>
-            <a className="dropdown-item" href="#">Delete</a>
+            <a className="dropdown-item" href="#" onClick={() => {this.props.dispatch(deleteFolder(this.props.name))}}>Delete</a>
           </div>
         </div>
       </div>

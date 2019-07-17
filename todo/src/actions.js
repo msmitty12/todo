@@ -14,6 +14,11 @@ export const setActiveFolder = (name) => ({
   name: name
 })
 
+export const deleteFolder = (name) => ({
+  type: 'DELETE_FOLDER',
+  name: name
+})
+
 export const toggleAddFolder = () => ({
   type: 'TOGGLE_ADD_FOLDER'
 })

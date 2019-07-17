@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
 import { db } from './index';
 
+const DEFAULT_FOLDER_NAME = "default"
+
 function addDoc(doc) {
   db.collection("todos").add(doc)
     .then(function(docRef) {
@@ -19,6 +21,26 @@ function addFolderDoc(doc) {
     .catch(function(error) {
         console.error("Error adding document: ", error);
     });
+}
+
+function deleteFolderDoc(folder_name) {
+  db.collection("folders").where('name', '==', folder_name)
+    .get()
+    .then(function(querySnapshot) {
+      if (querySnapshot.length > 1) {
+        console.error("Found too many items to delete")
+        return
+      }
+      querySnapshot.forEach(function(doc) {
+        db.collection("folders").doc(doc.id).delete()
+          .then(function() {
+              console.log("Successfully delete folder: " + folder_name);
+          })
+          .catch(function(error) {
+              console.error("Error deleting folder: " + folder_name, error);
+          });
+      })
+    })
 }
 
 function updateFolderDoc(folder) {
@@ -89,7 +111,7 @@ function folders(folders = [], action) {
   switch (action.type) {
     case 'ADD_TODO':
       // TODO: Changing object directly :( )
-      let folder = folders.find(it => {return it.name === action.folder | "default"})
+      let folder = folders.find(it => {return it.name === action.folder | DEFAULT_FOLDER_NAME})
       folder.todos.push(action.id)
       updateFolderDoc(folder)
 
@@ -97,7 +119,7 @@ function folders(folders = [], action) {
     case 'DELETE_TODO':
       console.log("DELETE") 
       console.log(action.id)
-      let delFolder = folders.find(it => {return it.name === action.folder | "default"})
+      let delFolder = folders.find(it => {return it.name === action.folder | DEFAULT_FOLDER_NAME})
       delFolder.todos = delFolder.todos.filter(id => {return id !== action.id})
       updateFolderDoc(delFolder)
 
@@ -106,6 +128,15 @@ function folders(folders = [], action) {
       let new_folder = {name: action.name, todos: []}
       addFolderDoc(new_folder)
       return folders.concat([new_folder])
+    case 'DELETE_FOLDER':
+      if (action.name == DEFAULT_FOLDER_NAME) {
+         console.error("Cannot delete default folder")
+         return folders.filter(folder => {return true})
+      }
+      else {
+         deleteFolderDoc(action.name)
+         return folders.filter(folder => {return folder.name != action.name})
+      }
     default:
       return folders
   }
@@ -126,6 +157,12 @@ function page(page = {}, action) {
       return {...page, add_task_accept_input: !accept_task_input}
     case 'ADD_FOLDER':
       return {...page, add_folder_accept_input: false}
+    case 'DELETE_FOLDER':
+      let new_active_folder = page.active_folder;
+      if (new_active_folder == action.name) {
+         new_active_folder = DEFAULT_FOLDER_NAME
+      }
+      return {...page, active_folder: new_active_folder}
     case 'ADD_TODO':
       return {...page, add_task_accept_input: false}
     default:

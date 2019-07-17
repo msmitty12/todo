@@ -23,7 +23,7 @@ class TodoForm2 extends Component {
     let formDisplay = (
       <form style={containerStyle}>
         <div className="form-group" width="90%">
-          <input type="text" className="form-control" ref={node => (nameInput = node)} placeholder="Task Name" />
+          <input autoFocus type="text" className="form-control" ref={node => (nameInput = node)} placeholder="Task Name" />
         </div>
         <div className="form-group">
           <textarea className="form-control" ref={node => (descInput = node)} placeholder="Description" rows="2"></textarea>
