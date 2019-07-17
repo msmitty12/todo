@@ -27,7 +27,11 @@ function AddFolder(props) {
 
     ret = (
       <div style={{...common_style, ...border_style}}>
-        <form onSubmit={() => {props.dispatch(addFolder(folder_name.value)); return false;}}>
+        <form onSubmit={(e) => 
+          {
+            e.preventDefault();
+            props.dispatch(addFolder(folder_name.value)); 
+          }}>
           <input style={{marginBottom: "5px"}} type="text" className="form-control" placeholder="Folder Name" ref={node => (folder_name = node)} />
           <button style={{marginRight: "5px"}} type="button" href="#" className="btn btn-secondary" onClick={() => {
             props.dispatch(toggleAddFolder())
