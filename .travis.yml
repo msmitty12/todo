@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - "7"
 before_install: echo "Preparing build"
-script: pushd todo && npm install && npm run build
+script: pushd todo && npm install && CI="" npm run build
 deploy:
   provider: pages
   local-dir: todo/build
