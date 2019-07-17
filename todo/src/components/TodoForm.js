@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { addTodo, acceptAddTaskInput } from '../actions.js';
+import { addTodo, toggleAddTask } from '../actions.js';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -32,7 +32,9 @@ class TodoForm2 extends Component {
           <label>Due Date</label>
           <input type="date" className="form-control" ref={node => (dueDateInput = node)} />
         </div>
-        <button type="button" href="#" className="btn btn-secondary">
+        <button style={{marginRight: "5px"}} type="button" href="#" className="btn btn-secondary" onClick={() => {
+            this.props.dispatch(toggleAddTask())
+         }}>
           Cancel
         </button>
         <button type="submit" className="btn btn-primary" onClick={e => {
@@ -58,7 +60,7 @@ class TodoForm2 extends Component {
       }
 
       formDisplay = (
-        <button style={buttonStyle} href="#" className="btn btn-primary" onClick={() => this.props.dispatch(acceptAddTaskInput())}>
+        <button style={buttonStyle} href="#" className="btn btn-primary" onClick={() => this.props.dispatch(toggleAddTask())}>
           <span className="glyphicon glyphicon-plus">&#x2b;</span> New Task
         </button>
       )

@@ -1,16 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { setActiveFolder } from '../actions.js'
-import { acceptAddFolderInput, addFolder } from '../actions.js';
-import styled from 'styled-components';
-
-const panelColor = "#6c7c96"
-const panelColor2 = "#9ab9ea"
-
-/*
-const panelColor = "#1d006d"
-const panelColor2 = "#00d0ff"
-*/
+import { addFolder, toggleAddFolder } from '../actions.js';
 
 
 function AddFolder(props) {
@@ -26,7 +17,7 @@ function AddFolder(props) {
   }
 
   let ret = (
-    <button style={common_style} href="#" className="btn btn-primary" onClick={() => props.dispatch(acceptAddFolderInput())}>
+    <button style={common_style} href="#" className="btn btn-primary" onClick={() => props.dispatch(toggleAddFolder())}>
       <span className="glyphicon glyphicon-plus">&#x2b;</span> New Folder
     </button>
   )
@@ -36,9 +27,11 @@ function AddFolder(props) {
 
     ret = (
       <div style={{...common_style, ...border_style}}>
-        <form onSubmit={() => props.dispatch(addFolder(folder_name.value))}>
-          <input type="text" className="form-control" placeholder="Folder Name" ref={node => (folder_name = node)} />
-          <button type="button" href="#" className="btn btn-secondary">
+        <form onSubmit={() => {props.dispatch(addFolder(folder_name.value)); return false;}}>
+          <input style={{marginBottom: "5px"}} type="text" className="form-control" placeholder="Folder Name" ref={node => (folder_name = node)} />
+          <button style={{marginRight: "5px"}} type="button" href="#" className="btn btn-secondary" onClick={() => {
+            props.dispatch(toggleAddFolder())
+          }}>
             Cancel
           </button>
           <button type="submit" href="#" className="btn btn-success">
@@ -54,7 +47,7 @@ function AddFolder(props) {
 
 class Folder extends Component {
   render() {
-    let is_active = this.props.active_folder == this.props.name
+    let is_active = this.props.active_folder === this.props.name
     const itemStyle = {
       margin: "5px",
       backgroundColor: is_active ? "yellow" : "lightyellow",

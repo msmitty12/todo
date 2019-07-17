@@ -14,12 +14,12 @@ export const setActiveFolder = (name) => ({
   name: name
 })
 
-export const acceptAddFolderInput = () => ({
-  type: 'SET_ACCEPT_ADD_FOLDER'
+export const toggleAddFolder = () => ({
+  type: 'TOGGLE_ADD_FOLDER'
 })
 
-export const acceptAddTaskInput = () => ({
-  type: 'SET_ACCPET_ADD_TASK'
+export const toggleAddTask = () => ({
+  type: 'TOGGLE_ADD_TASK'
 })
 
 export const addFolder = (name) => ({

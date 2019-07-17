@@ -4,7 +4,6 @@ import {default as TodoForm} from './TodoForm'
 import {LeftFilters} from './LeftFilters'
 import {default as Folders} from './Folders'
 import { connect } from 'react-redux';
-import styled, { keyframes } from 'styled-components';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 

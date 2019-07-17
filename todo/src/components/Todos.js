@@ -68,8 +68,8 @@ class Todos extends Component {
       //animation: ${spin} 1s linear;
     `
 
-    let folder = this.props.folders.find((it) => {return it.name == this.props.page.active_folder})
-    let active_todos = folder.todos.map(x => this.props.todos.find((it) => {return it.id == x}))
+    let folder = this.props.folders.find((it) => {return it.name === this.props.page.active_folder})
+    let active_todos = folder.todos.map(x => this.props.todos.find((it) => {return it.id === x}))
 
     return (
       <StyledTodosContainer>

@@ -89,7 +89,7 @@ function folders(folders = [], action) {
   switch (action.type) {
     case 'ADD_TODO':
       // TODO: Changing object directly :( )
-      let folder = folders.find(it => {return it.name == action.folder | "default"})
+      let folder = folders.find(it => {return it.name === action.folder | "default"})
       folder.todos.push(action.id)
       updateFolderDoc(folder)
 
@@ -97,7 +97,7 @@ function folders(folders = [], action) {
     case 'DELETE_TODO':
       console.log("DELETE") 
       console.log(action.id)
-      let delFolder = folders.find(it => {return it.name == action.folder | "default"})
+      let delFolder = folders.find(it => {return it.name === action.folder | "default"})
       delFolder.todos = delFolder.todos.filter(id => {return id !== action.id})
       updateFolderDoc(delFolder)
 
@@ -118,10 +118,12 @@ function page(page = {}, action) {
       return {...page, leftColumn: {...page["leftColumn"], visible: !visible}}
     case 'SET_ACTIVE_FOLDER':
       return {...page, active_folder: action.name}
-    case 'SET_ACCEPT_ADD_FOLDER':
-      return {...page, add_folder_accept_input: true}
-    case 'SET_ACCPET_ADD_TASK':
-      return {...page, add_task_accept_input: true}
+    case 'TOGGLE_ADD_FOLDER':
+      const accept_input = page && page.add_folder_accept_input
+      return {...page, add_folder_accept_input: !accept_input}
+    case 'TOGGLE_ADD_TASK':
+      const accept_task_input = page && page.add_task_accept_input
+      return {...page, add_task_accept_input: !accept_task_input}
     case 'ADD_FOLDER':
       return {...page, add_folder_accept_input: false}
     case 'ADD_TODO':
