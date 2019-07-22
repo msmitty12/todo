@@ -69,11 +69,11 @@ class Todos extends Component {
     `
 
     let folder = this.props.folders.find((it) => {return it.name === this.props.page.active_folder})
-    let active_todos = folder.todos.map(x => this.props.todos.find((it) => {return it.id === x}))
+    let active_todos = folder && folder.todos.map(x => this.props.todos.find((it) => {return it.id === x}))
 
     return (
       <StyledTodosContainer>
-        {active_todos.sort(function(a, b){return new Date(a.dueDate) - new Date(b.dueDate)}).map((todo, index) => (
+        {active_todos && active_todos.sort(function(a, b){return new Date(a.dueDate) - new Date(b.dueDate)}).map((todo, index) => (
             <Task {...todo} 
                   dispatch={this.props.dispatch}
                   active_folder={this.props.page.active_folder} />

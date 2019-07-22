@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import {default as Body} from './Body'
-import {default as Header} from './Header'
+import {default as Body} from './Body';
+import {default as Header} from './Header';
+import {default as TodoHotKeys} from '../hotkeys.js'
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -13,19 +14,21 @@ const panelColor2 = "#00d0ff"
 const pageColor = "#3c0042"
 */
 
-
 class App extends Component {
   render() {
+
     const style = {
       textAlign: "center",
       minHeight: "100vh",
       backgroundColor: pageColor
     }
     return (
-      <div style={style}>
-        <Header />
-        <Body />
-      </div>
+      <TodoHotKeys>
+        <div style={style}>
+          <Header />
+          <Body />
+        </div>
+      </TodoHotKeys>
     )
   }
 }
