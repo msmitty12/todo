@@ -129,13 +129,13 @@ function folders(folders = [], action) {
       addFolderDoc(new_folder)
       return folders.concat([new_folder])
     case 'DELETE_FOLDER':
-      if (action.name == DEFAULT_FOLDER_NAME) {
+      if (action.name === DEFAULT_FOLDER_NAME) {
          console.error("Cannot delete default folder")
          return folders.filter(folder => {return true})
       }
       else {
          deleteFolderDoc(action.name)
-         return folders.filter(folder => {return folder.name != action.name})
+         return folders.filter(folder => {return folder.name !== action.name})
       }
     default:
       return folders
@@ -159,7 +159,7 @@ function page(page = {}, action) {
       return {...page, add_folder_accept_input: false}
     case 'DELETE_FOLDER':
       let new_active_folder = page.active_folder;
-      if (new_active_folder == action.name) {
+      if (new_active_folder === action.name) {
          new_active_folder = DEFAULT_FOLDER_NAME
       }
       return {...page, active_folder: new_active_folder}
