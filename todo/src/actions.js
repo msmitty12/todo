@@ -46,3 +46,11 @@ export const deleteTodo = (id, folder) => ({
 export const toggleLeftColumn = () => ({
     type: 'TOGGLE_LEFT_COLUMN'
 })
+
+export const showTodoPage = () => ({
+    type: 'SHOW_TODO_PAGE'
+})
+
+export const showStonksPage = () => ({
+    type: 'SHOW_STONKS_PAGE'
+})

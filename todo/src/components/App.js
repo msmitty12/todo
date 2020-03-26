@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {default as Body} from './Body';
+import {default as StonksBody} from './StonksBody';
 import {default as Header} from './Header';
 import {default as TodoHotKeys} from '../hotkeys.js'
 import 'bootstrap';
@@ -22,15 +24,35 @@ class App extends Component {
       minHeight: "100vh",
       backgroundColor: pageColor
     }
+
+    let body;
+    switch(this.props.page.active_page) {
+      case "stonks":
+        body = <StonksBody />
+        break;
+      case "todo":
+      default:
+        body = <Body />
+        break
+    }
+
     return (
       <TodoHotKeys>
         <div style={style}>
           <Header />
-          <Body />
+          {body}
         </div>
       </TodoHotKeys>
     )
   }
 }
 
-export default App;
+const mapStateToPropsApp = (state) => {
+  return {
+    todos: state.todos,
+    folders: state.folders,
+    page: state.page
+  }
+}
+
+export default connect(mapStateToPropsApp, null)(App);
