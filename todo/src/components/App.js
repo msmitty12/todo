@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {default as Body} from './Body';
 import {default as StonksBody} from './StonksBody';
+import {default as GameBody} from './GameBody';
 import {default as Header} from './Header';
 import {default as TodoHotKeys} from '../hotkeys.js'
 import 'bootstrap';
@@ -29,6 +30,9 @@ class App extends Component {
     switch(this.props.page.active_page) {
       case "stonks":
         body = <StonksBody />
+        break;
+      case "game":
+        body = <GameBody />
         break;
       case "todo":
       default:

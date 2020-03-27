@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
-class StonksBody extends Component {
+class GameBody extends Component {
   render() {
     const style = {
       paddingTop: "50px"
@@ -11,6 +11,8 @@ class StonksBody extends Component {
 
     return (
       <div className="container" style={style}>
+          <div>LOOK AT THIS GREAT GAME</div> 
+          <iframe src="./phaser_game.html" height="600" width="800"></iframe>
       </div>
     )
   }
@@ -22,4 +24,4 @@ const mapStateToPropsTodos = (state) => {
   }
 }
 
-export default connect(mapStateToPropsTodos, null)(StonksBody);
+export default connect(mapStateToPropsTodos, null)(GameBody);

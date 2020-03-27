@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { toggleLeftColumn, showTodoPage, showStonksPage } from '../actions.js'
+import { toggleLeftColumn, showTodoPage, showGamePage, showStonksPage } from '../actions.js'
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
@@ -39,13 +39,18 @@ function Header(props) {
             <span className="navbar-toggler-icon"></span>
           </button>
         </div>
-        <div className="nav-item">
-          <button type="button" onClick={() => props.dispatch(showTodoPage())}>
+        <div className="nav-item ml-2">
+          <button type="button" className="btn btn-info" onClick={() => props.dispatch(showTodoPage())}>
             TODO
           </button>
         </div>
-        <div className="nav-item">
-          <button type="button" onClick={() => props.dispatch(showStonksPage())}>
+        <div className="nav-item ml-2">
+          <button type="button" className="btn btn-success" onClick={() => props.dispatch(showGamePage())}>
+            GAME
+          </button>
+        </div>
+        <div className="nav-item mr-auto ml-2">
+          <button type="button" className="btn btn-warning" onClick={() => props.dispatch(showStonksPage())}>
             STONKS
           </button>
         </div>

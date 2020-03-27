@@ -54,3 +54,7 @@ export const showTodoPage = () => ({
 export const showStonksPage = () => ({
     type: 'SHOW_STONKS_PAGE'
 })
+
+export const showGamePage = () => ({
+  type: 'SHOW_GAME_PAGE'
+})

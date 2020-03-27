@@ -146,6 +146,8 @@ function page(page = {}, action) {
   switch (action.type) {
     case 'SHOW_STONKS_PAGE':
       return {...page, active_page: "stonks"}
+    case 'SHOW_GAME_PAGE':
+      return {...page, active_page: "game"}
     case 'SHOW_TODO_PAGE':
       return {...page, active_page: "todo"}
     case 'TOGGLE_LEFT_COLUMN':
