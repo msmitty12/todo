@@ -2,7 +2,7 @@
 <html lang="en"> 
 <head> 
     <meta charset="UTF-8" />
-    <title>Making your first Phaser 3 Game - Part 10</title>
+    <title>Good Scrum</title>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
     <style type="text/css">
         body {
@@ -39,10 +39,14 @@ var platforms;
 var cursors;
 var score = 0;
 var gameOver = false;
+var inSprint = false;
 var scoreText;
 
-var game = new Phaser.Game(config);
+var GAME_HEIGHT = 600;
+var GAME_WIDTH = 600;
 
+var game = new Phaser.Game(config);
+var graphics = Phaser.GameObjects.Graphics(game.scene, {});
 function preload ()
 {
     this.load.image('sky', 'assets/sky.png');
@@ -66,6 +70,13 @@ function create ()
 
     // The player and its settings
     player = this.physics.add.sprite(100, 100, 'dude');
+    stuart = this.physics.add.sprite(50, 50, 'stuartSprite');
+    goodTeam = this.physics.add.group();
+    for (let i=0; i < 6; i ++) {
+        goodTeam.create(i * 50 + 82, GAME_HEIGHT - 100, 'goodMember');
+    }
+    goodTeam.setVelocityX(60, 8);
+    stuart.setAccelerationY(-300);
 
     //  Player physics properties. Give the little guy a slight bounce.
     player.setBounce(0.2);
@@ -95,15 +106,19 @@ function create ()
         repeat: -1
     });
 
+    this.anims.create({
+        key: 'stuartAnim',
+        frames: [ { key: 'dude', frame: 4 }],
+        frameRate: 20
+    });
+
     //  Input Events
     cursors = this.input.keyboard.createCursorKeys();
 
     //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
-    stars = this.physics.add.group({
-        key: 'star',
-        repeat: 11,
-        setXY: { x: 12, y: 0, stepX: 45 }
-    });
+    stars = this.physics.add.group();
+
+    stars.create(stuart.body.x, stuart.body.y, 'star')
 
     stars.children.iterate(function (child) {
 
@@ -116,18 +131,22 @@ function create ()
 
     //  The score
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '12px', fill: '#000' });
-    xVelText = this.add.text(200, 16, 'xvel: 0', { fontSize: '12px', fill: '#000' });
-    yVelText = this.add.text(350, 16, 'xvel: 0', { fontSize: '12px', fill: '#000' });
+    timeText = this.add.text(100, 16, 'time: 0', { fontSize: '12px', fill: '#000' });
 
     //  Collide the player and the stars with the platforms
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(stars, platforms);
     this.physics.add.collider(bombs, platforms);
+    this.physics.add.collider(goodTeam, platforms);
 
+    let temp_physics = this.physics
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-    this.physics.add.overlap(player, stars, collectStar, null, this);
+    goodTeam.children.iterate(function (child) {
+        temp_physics.add.overlap(child, stars, collectStar, null, this);
+    });
 
     this.physics.add.collider(player, bombs, hitBomb, null, this);
+    this.physics.add.overlap(player, stars, playerHitStar, null, this);
 }
 
 function update ()
@@ -135,6 +154,28 @@ function update ()
     if (gameOver)
     {
         return;
+    }  
+
+    if (!inSprint) {
+        inSprint = true;
+        sprintCountdown(100);
+    }
+
+    if (Math.random() > .99) {
+        stars.create(stuart.body.x, stuart.body.y, 'star')
+    }
+
+    goodTeam.children.iterate(function (child) {
+        if (child.body.x < 50 || child.body.x > 550) {
+            child.setVelocityX(-child.body.velocity.x);
+        }
+    });
+
+    if (stuart.body.x < 50) {
+        stuart.setVelocityX(200);
+    }
+    else if (stuart.body.x > 550) {
+        stuart.setVelocityX(-200);
     }
 
     if (cursors.left.isDown)
@@ -166,47 +207,60 @@ function update ()
     {
         player.setAccelerationY(0)
     }
-    xVelText.setText("xVelocity: " + player.body.velocity.x)
-    yVelText.setText("yVelocity: " + player.body.velocity.y)
 }
 
-function collectStar (player, star)
+async function collectStar (child, star)
 {
     star.disableBody(true, true);
+
+    oldVel = child.body.velocity.x;
+    child.setVelocityX(0);
+
+    doingWork = new Phaser.Geom.Rectangle(child.x, child.y, 100, 10);
+
+    await new Promise(r => setTimeout(r, 2000));
+
+    child.setVelocityX(oldVel);
 
     //  Add and update the score
     score += 10;
     scoreText.setText('Score: ' + score);
 
-    if (stars.countActive(true) === 0)
-    {
-        //  A new batch of stars to collect
-        stars.children.iterate(function (child) {
+    var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-            child.enableBody(true, child.x, 0, true, true);
+    /*
+    var bomb = bombs.create(x, 16, 'bomb');
+    bomb.setBounce(1);
+    bomb.setCollideWorldBounds(true);
+    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+    bomb.allowGravity = false;
+    */
 
-        });
-
-        var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-        var bomb = bombs.create(x, 16, 'bomb');
-        bomb.setBounce(1);
-        bomb.setCollideWorldBounds(true);
-        bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-        bomb.allowGravity = false;
-
-    }
 }
 
-function hitBomb (player, bomb)
+async function hitBomb (player, bomb)
 {
-    this.physics.pause();
+    bomb.disableBody(true, true);
 
+    player.setVelocity(0, 0);
     player.setTint(0xff0000);
 
-    player.anims.play('turn');
+    await new Promise(r => setTimeout(r, 2000));
 
-    gameOver = true;
+    player.clearTint();
+}
+
+async function sprintCountdown(seconds) {
+    while (seconds > 0) {
+        timeText.setText('Time: ' + seconds + ' seconds');
+        await new Promise(r => setTimeout(r, 1000));
+        seconds -= 1;
+    }
+    inSprint = false;
+}
+
+function playerHitStar (player, star) {
+    star.setVelocity(800, -300);
 }
 
 </script>
