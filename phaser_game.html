@@ -3,7 +3,7 @@
 <head> 
     <meta charset="UTF-8" />
     <title>Good Scrum</title>
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.22.0/dist/phaser.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -41,19 +41,26 @@ var score = 0;
 var gameOver = false;
 var inSprint = false;
 var scoreText;
+var scene;
+var graphics;
 
 var GAME_HEIGHT = 600;
 var GAME_WIDTH = 600;
 
 var game = new Phaser.Game(config);
-var graphics = Phaser.GameObjects.Graphics(game.scene, {});
 function preload ()
 {
+    scene = this;
+    graphics = this.add.graphics();
     this.load.image('sky', 'assets/sky.png');
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
     this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+}
+
+function getGoodMemberVelocity() {
+    return 60 + 30 * Math.random()
 }
 
 function create ()
@@ -70,12 +77,14 @@ function create ()
 
     // The player and its settings
     player = this.physics.add.sprite(100, 100, 'dude');
-    stuart = this.physics.add.sprite(50, 50, 'stuartSprite');
+    stuart = this.physics.add.sprite(400, 50, 'stuartSprite');
+    stuart.setVelocityX(200);
     goodTeam = this.physics.add.group();
     for (let i=0; i < 6; i ++) {
-        goodTeam.create(i * 50 + 82, GAME_HEIGHT - 100, 'goodMember');
+        goodMember = goodTeam.create(i * 50 + 82, GAME_HEIGHT - 100, 'goodMember');
+        goodMember.setData({"working": false, "totalTime": 0, "timeElapsed": 0, "loadingScreen": null});
+        goodMember.setVelocityX(getGoodMemberVelocity());
     }
-    goodTeam.setVelocityX(60, 8);
     stuart.setAccelerationY(-300);
 
     //  Player physics properties. Give the little guy a slight bounce.
@@ -142,42 +151,23 @@ function create ()
     let temp_physics = this.physics
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     goodTeam.children.iterate(function (child) {
-        temp_physics.add.overlap(child, stars, collectStar, null, this);
+        temp_physics.add.overlap(child, stars, collectStar, () => {return !child.getData("working")}, this);
     });
 
     this.physics.add.collider(player, bombs, hitBomb, null, this);
     this.physics.add.overlap(player, stars, playerHitStar, null, this);
 }
 
-function update ()
-{
-    if (gameOver)
-    {
-        return;
-    }  
-
-    if (!inSprint) {
-        inSprint = true;
-        sprintCountdown(100);
-    }
-
-    if (Math.random() > .99) {
-        stars.create(stuart.body.x, stuart.body.y, 'star')
-    }
-
-    goodTeam.children.iterate(function (child) {
-        if (child.body.x < 50 || child.body.x > 550) {
-            child.setVelocityX(-child.body.velocity.x);
-        }
-    });
-
+function updateStuart() {
     if (stuart.body.x < 50) {
         stuart.setVelocityX(200);
     }
     else if (stuart.body.x > 550) {
         stuart.setVelocityX(-200);
     }
+}
 
+function updatePlayer() {
     if (cursors.left.isDown)
     {
         player.setAccelerationX(-900);
@@ -209,26 +199,96 @@ function update ()
     }
 }
 
-async function collectStar (child, star)
+function updateGoodTeam() {
+    goodTeam.children.iterate(function (child) {
+        if (child.getData("working")) {
+            child.setVelocityX(0);
+
+            let totalTime = child.getData("totalTime")
+            let timeElapsed = child.getData("timeElapsed")
+            child.setData("timeElapsed", timeElapsed + 1)
+
+            var loading_screen = child.getData("loadingScreen")
+            var progress_bar = child.getData("progressBar")
+            progress_bar.setSize((timeElapsed / totalTime) * loading_screen.width, 10);
+
+            if (totalTime - timeElapsed < 1) {
+                if (child.x < GAME_WIDTH / 2) {
+                    child.setVelocityX(getGoodMemberVelocity());
+                } else {
+                    child.setVelocityX(getGoodMemberVelocity() * -1);
+                }
+
+                child.setData("working", false);
+                child.setData("timeElapsed", 0);
+                child.setData("totalTime", 0);
+                loading_screen.destroy();
+                progress_bar.destroy();
+                child.setData("loadingScreen", null)
+                child.setData("progressBar", null)
+
+                //  Add and update the score
+                score += 10;
+                scoreText.setText('Score: ' + score);
+            }
+        }
+        else {
+            if (child.body.x < 50 || child.body.x > 550) {
+                child.setVelocityX(-child.body.velocity.x);
+            }
+        }
+    });
+
+}
+
+function update ()
+{
+    if (gameOver)
+    {
+        return;
+    }  
+
+    if (!inSprint) {
+        inSprint = true;
+        sprintCountdown(100);
+    }
+
+    if (Math.random() > .99) {
+        stars.create(stuart.body.x, stuart.body.y, 'star')
+    }
+
+    updateGoodTeam()
+
+    updateStuart()
+
+    updatePlayer()
+
+}
+
+function collectStar (child, star)
 {
     star.disableBody(true, true);
 
-    oldVel = child.body.velocity.x;
-    child.setVelocityX(0);
+    child.setData("working", true)
 
-    doingWork = new Phaser.Geom.Rectangle(child.x, child.y, 100, 10);
+    child.setData("totalTime", child.getData("totalTime") + 60)
 
-    await new Promise(r => setTimeout(r, 2000));
+    if(!child.getData("loadingScreen")) {
+        var y_pos = child.y
+        var x_pos = child.x
+        var loading_screen = scene.add.rectangle(x_pos - 10,y_pos - 40, 30, 10, 0xff0000);
+        var progress_bar = scene.add.rectangle(x_pos - 10,y_pos - 40, 0, 10, 0x00ff00);
+        loading_screen.setOrigin(0,0);
+        progress_bar.setDepth(999);
+        progress_bar.setOrigin(0,0);
 
-    child.setVelocityX(oldVel);
-
-    //  Add and update the score
-    score += 10;
-    scoreText.setText('Score: ' + score);
-
-    var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+        child.setData("loadingScreen", loading_screen)
+        child.setData("progressBar", progress_bar)
+    }
 
     /*
+    var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+
     var bomb = bombs.create(x, 16, 'bomb');
     bomb.setBounce(1);
     bomb.setCollideWorldBounds(true);
