@@ -43,6 +43,7 @@ var inSprint = false;
 var scoreText;
 var scene;
 var graphics;
+var story_point_options = [1, 2, 3, 5, 8, 13]
 
 var GAME_HEIGHT = 600;
 var GAME_WIDTH = 600;
@@ -126,15 +127,6 @@ function create ()
 
     //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
     stars = this.physics.add.group();
-
-    stars.create(stuart.body.x, stuart.body.y, 'star')
-
-    stars.children.iterate(function (child) {
-
-        //  Give each star a slightly different bounce
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-
-    });
 
     bombs = this.physics.add.group();
 
@@ -228,7 +220,7 @@ function updateGoodTeam() {
                 child.setData("progressBar", null)
 
                 //  Add and update the score
-                score += 10;
+                score += totalTime / 250;
                 scoreText.setText('Score: ' + score);
             }
         }
@@ -254,8 +246,19 @@ function update ()
     }
 
     if (Math.random() > .99) {
-        stars.create(stuart.body.x, stuart.body.y, 'star')
+        var new_star = stars.create(stuart.body.x, stuart.body.y, 'star')
+        var story_points = story_point_options[Math.floor(Math.random() * story_point_options.length)]
+        new_star.setData("storyPoints", story_points)
+        var story_points_text = this.add.text(16, 16, story_points, { fontSize: '12px', fill: '#000' });
+        story_points_text.setOrigin(0.5,0.5);
+        new_star.setData("storyPointText", story_points_text)
     }
+
+    stars.children.iterate(function (star) {
+        var point_text = star.getData("storyPointText")
+        point_text.y = star.y;
+        point_text.x = star.x;
+    });
 
     updateGoodTeam()
 
@@ -267,11 +270,14 @@ function update ()
 
 function collectStar (child, star)
 {
+    var point_text = star.getData("storyPointText")
+    var points = star.getData("storyPoints");
+    point_text.destroy();
     star.disableBody(true, true);
 
     child.setData("working", true)
 
-    child.setData("totalTime", child.getData("totalTime") + 60)
+    child.setData("totalTime", child.getData("totalTime") + points * 250)
 
     if(!child.getData("loadingScreen")) {
         var y_pos = child.y
