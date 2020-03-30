@@ -51,7 +51,7 @@ function Header(props) {
         </div>
         <div className="nav-item mr-auto ml-2">
           <button type="button" className="btn btn-warning" onClick={() => props.dispatch(showStonksPage())}>
-            STONKS
+            OTHER STUFF
           </button>
         </div>
       </nav>
