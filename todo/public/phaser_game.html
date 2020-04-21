@@ -13,24 +13,9 @@
 <body>
 
 <script type="text/javascript">
-
-var config = {
-    type: Phaser.AUTO,
-    width: 600,
-    height: 600,
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: { y: 300 },
-            debug: false
-        }
-    },
-    scene: {
-        preload: preload,
-        create: create,
-        update: update
-    }
-};
+// Our scenes
+var gameScene = new Phaser.Scene("game");
+var titleScene = new Phaser.Scene("title");
 
 var player;
 var stars;
@@ -42,7 +27,6 @@ var gameOver = false;
 var inSprint = false;
 var scoreText;
 var scene;
-var graphics;
 var story_point_options = [1, 2, 3, 5, 8, 13]
 
 var GAME_HEIGHT = 600;
@@ -50,11 +34,9 @@ var GAME_WIDTH = 600;
 
 var good_team_members = ["mksmith", "sadams2", "dcrews", "mgcarroll", "stho"]
 
-var game = new Phaser.Game(config);
-function preload ()
+gameScene.preload = function ()
 {
     scene = this;
-    graphics = this.add.graphics();
     this.load.image('sky', 'assets/sky.png');
     this.load.image('ground', 'assets/platform.png');
     this.load.image('jira', 'assets/jira.png');
@@ -68,11 +50,7 @@ function preload ()
     this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
 }
 
-function getGoodMemberVelocity() {
-    return 60 + 30 * Math.random()
-}
-
-function create ()
+gameScene.create = function ()
 {
     //  A simple background for our game
     this.add.image(400, 300, 'sky');
@@ -130,6 +108,85 @@ function create ()
     this.physics.add.collider(player, bombs, hitBomb, null, this);
     this.physics.add.overlap(player, stars, playerHitStar, null, this);
 }
+
+gameScene.update = function ()
+{
+    if (gameOver)
+    {
+        return;
+    }  
+
+    if (!inSprint) {
+        startSprint();
+    }
+
+    if (Math.random() > .99) {
+        var new_star = stars.create(stuart.body.x, stuart.body.y, 'jira')
+        var story_points = story_point_options[Math.floor(Math.random() * story_point_options.length)]
+        new_star.setData("storyPoints", story_points)
+        var story_points_text = this.add.text(16, 16, story_points, { fontSize: '20px', fontWeight: '900', fill: '#000'});
+        story_points_text.setOrigin(0.5,0.5);
+        new_star.setData("storyPointText", story_points_text)
+    }
+
+    stars.children.iterate(function (star) {
+        var point_text = star.getData("storyPointText")
+        point_text.y = star.y - 15;
+        point_text.x = star.x;
+    });
+
+    updateGoodTeam()
+
+    updateStuart()
+
+    updatePlayer()
+
+}
+
+titleScene.preload = function () {
+    this.load.image('sky', 'assets/sky.png');
+}
+
+titleScene.create = function () {
+    //  A simple background for our game
+    this.add.image(400, 300, 'sky');
+
+    var text = this.add.text(100, 100, 'Play the game!', { fontSize: '36px', color: '#FFF' });
+    text.setInteractive().on('pointerup', () => {game.scene.start('game')})
+    console.log(text)
+    console.log("hi")
+}
+
+titleScene.update = function () {
+
+}
+
+var config = {
+    type: Phaser.AUTO,
+    width: 600,
+    height: 600,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 300 },
+            debug: false
+        }
+    }
+};
+
+var game = new Phaser.Game(config);
+
+// Add both scenes (it does not start them)
+game.scene.add('title', titleScene);
+game.scene.add("game", gameScene);
+
+// Start the title scene
+game.scene.start('title');
+
+function getGoodMemberVelocity() {
+    return 60 + 30 * Math.random()
+}
+
 
 function updateStuart() {
     if (stuart.body.x < 50) {
@@ -212,40 +269,6 @@ function updateGoodTeam() {
 function startSprint() {
     inSprint = true;
     sprintCountdown(100);
-}
-
-function update ()
-{
-    if (gameOver)
-    {
-        return;
-    }  
-
-    if (!inSprint) {
-        startSprint();
-    }
-
-    if (Math.random() > .99) {
-        var new_star = stars.create(stuart.body.x, stuart.body.y, 'jira')
-        var story_points = story_point_options[Math.floor(Math.random() * story_point_options.length)]
-        new_star.setData("storyPoints", story_points)
-        var story_points_text = this.add.text(16, 16, story_points, { fontSize: '20px', fontWeight: '900', fill: '#000'});
-        story_points_text.setOrigin(0.5,0.5);
-        new_star.setData("storyPointText", story_points_text)
-    }
-
-    stars.children.iterate(function (star) {
-        var point_text = star.getData("storyPointText")
-        point_text.y = star.y - 15;
-        point_text.x = star.x;
-    });
-
-    updateGoodTeam()
-
-    updateStuart()
-
-    updatePlayer()
-
 }
 
 function collectStar (child, star)
