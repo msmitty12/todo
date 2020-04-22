@@ -24,7 +24,7 @@ var platforms;
 var cursors;
 var score = 0;
 var gameOver = false;
-var inSprint = false;
+var inSprint = true;
 var scoreText;
 var scene;
 var story_point_options = [1, 2, 3, 5, 8, 13]
@@ -107,6 +107,8 @@ gameScene.create = function ()
 
     this.physics.add.collider(player, bombs, hitBomb, null, this);
     this.physics.add.overlap(player, stars, playerHitStar, null, this);
+
+    sprintCountdown(5);
 }
 
 gameScene.update = function ()
@@ -118,6 +120,7 @@ gameScene.update = function ()
 
     if (!inSprint) {
         startSprint();
+        return
     }
 
     if (Math.random() > .99) {
@@ -152,7 +155,10 @@ titleScene.create = function () {
     this.add.image(400, 300, 'sky');
 
     var text = this.add.text(100, 100, 'Play the game!', { fontSize: '36px', color: '#FFF' });
-    text.setInteractive().on('pointerup', () => {game.scene.start('game')})
+    text.setInteractive().on('pointerup', () => {game.scene.switch('title', 'game');})
+        .on('pointerover', () => {text.setStyle({ color: '#ff0'});})
+        .on('pointerdown', () => {text.setStyle({ color: '#000'});})
+        .on('pointerout', () => {text.setStyle({ color: '#FFF'});})
     console.log(text)
     console.log("hi")
 }
@@ -184,7 +190,8 @@ game.scene.add("game", gameScene);
 game.scene.start('title');
 
 function getGoodMemberVelocity() {
-    return 60 + 30 * Math.random()
+    var multiplier = Math.random() < 0.5 ? -1 : 1
+    return (60 + 30 * Math.random()) * multiplier
 }
 
 
@@ -258,8 +265,11 @@ function updateGoodTeam() {
             }
         }
         else {
-            if (child.body.x < 50 || child.body.x > 550) {
-                child.setVelocityX(-child.body.velocity.x);
+            if (child.body.x < 5)
+            {
+                child.setVelocityX(Math.abs(child.body.velocity.x));
+            } else if (child.body.x > 550) {
+                child.setVelocityX(-Math.abs(child.body.velocity.x));
             }
         }
     });
@@ -268,7 +278,8 @@ function updateGoodTeam() {
 
 function startSprint() {
     inSprint = true;
-    sprintCountdown(100);
+    sprintCountdown(5);
+    game.scene.switch('game', 'title');
 }
 
 function collectStar (child, star)
