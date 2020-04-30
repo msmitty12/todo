@@ -75,6 +75,10 @@ class GameScene extends Phaser.Scene {
 
 	    //  Input Events
 	    this.cursors = this.input.keyboard.createCursorKeys();
+	    this.wKey = this.input.keyboard.addKey('W'); 
+	    this.aKey = this.input.keyboard.addKey('A'); 
+	    this.sKey = this.input.keyboard.addKey('S'); 
+	    this.dKey = this.input.keyboard.addKey('D'); 
 
 	    //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
 	    this.stars = this.physics.add.group();
@@ -147,11 +151,11 @@ class GameScene extends Phaser.Scene {
 	}
 
 	updatePlayer() {
-	    if (this.cursors.left.isDown)
+	    if (this.cursors.left.isDown || this.aKey.isDown)
 	    {
 	        this.player.setAccelerationX(-900);
 	    }
-	    else if (this.cursors.right.isDown)
+	    else if (this.cursors.right.isDown || this.dKey.isDown)
 	    {
 	        this.player.setAccelerationX(900);
 	    }
@@ -159,11 +163,11 @@ class GameScene extends Phaser.Scene {
 	        this.player.setAccelerationX(0);
 	    }
 
-	    if (this.cursors.up.isDown)
+	    if (this.cursors.up.isDown || this.wKey.isDown)
 	    {
 	        this.player.setAccelerationY(-900)
 	    }
-	    else if (this.cursors.down.isDown)
+	    else if (this.cursors.down.isDown || this.sKey.isDown)
 	    {
 	        this.player.setAccelerationY(900)
 	    }
