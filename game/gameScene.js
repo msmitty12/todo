@@ -26,6 +26,7 @@ class GameScene extends Phaser.Scene {
         this.sprint_num = data.sprint_num;
         this.total_score = data.total_score;
         this.score = 0;
+        this.incomplete_sprints = data.incomplete_sprints;
     }
 
 	preload() {
@@ -252,7 +253,15 @@ class GameScene extends Phaser.Scene {
 		this.timeText.setText('Time: ' + this.game_time);
 
 		if (this.game_time == 0) {
-			this.scene.start("title", {score: this.total_score + this.score, sprint_num: this.sprint_num + 1});
+			var ticket_in_progress = false
+			this.goodTeam.children.iterate(function (child) {
+				ticket_in_progress = ticket_in_progress || child.getData("working")
+			});
+
+			if (ticket_in_progress) {
+				this.incomplete_sprints += 1
+			}
+			this.scene.start("title", {score: this.total_score + this.score, incomplete_sprints: this.incomplete_sprints, sprint_num: this.sprint_num + 1});
 		}
 	}
 
