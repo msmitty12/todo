@@ -12,7 +12,7 @@ class GameBody extends Component {
     return (
       <div className="container" style={style}>
           <div>LOOK AT THIS GREAT GAME</div> 
-          <iframe src="./phaser_game.html" height="600" width="600"></iframe>
+          <iframe src="https://msmitty12.github.io/goodsim//phaser_game.html" height="600" width="600"></iframe>
       </div>
     )
   }
